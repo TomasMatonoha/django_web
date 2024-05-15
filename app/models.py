@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+
 # Create your models here.
+
 
 class Location(models.Model):
     name = models.CharField(max_length=255,
@@ -25,6 +27,7 @@ class Location(models.Model):
     def __str__(self):
         return self.name
 
+
 class Post(models.Model):
     title = models.CharField(max_length=255,
                              verbose_name="Post title",
@@ -43,7 +46,7 @@ class Post(models.Model):
                                  on_delete=models.CASCADE,
                                  verbose_name="Post location",
                                  error_messages={"blank": "Enter post location"})
-    featured_image = models.ImageField(upload_to='post_media',
+    image = models.ImageField(upload_to='post_media',
                                        blank=True,
                                        null=True)
     slug = models.SlugField(unique=True)
@@ -54,6 +57,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE,
@@ -66,5 +70,21 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['created_at', 'author', 'updated_at']
+        verbose_name = 'Comment'
+
     def __str__(self):
         return f'Comment by {self.author} on {self.post}'
+
+
+class Like(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (('author', 'post'),)
+        verbose_name = 'Like'
+
+    def __str__(self):
+        return f'Liked by {self.user} on {self.post}'
