@@ -16,8 +16,9 @@ class Location(models.Model):
                                  error_messages={'blank': "Enter a latitude"})
     longitude = models.FloatField(validators=[MinValueValidator(-180), MaxValueValidator(180)],
                                   error_messages={'blank': "Enter a longitude"})
-    description = models.TextField(blank=True,
-                                   null=True)
+    description = models.CharField(blank=True,
+                                   null=True,
+                                   max_length=255)
     creation_time = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -47,9 +48,9 @@ class Post(models.Model):
                                  verbose_name="Post location",
                                  error_messages={"blank": "Enter post location"})
     image = models.ImageField(upload_to='post_media',
-                                       blank=True,
-                                       null=True)
-    slug = models.SlugField(unique=True)
+                              verbose_name='Post image',
+                              blank=True,
+                              null=True)
 
     class Meta:
         ordering = ['title', 'created_at', 'updated_at', 'location', 'author']
@@ -83,7 +84,7 @@ class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (('author', 'post'),)
+        unique_together = (('user', 'post'),)
         verbose_name = 'Like'
 
     def __str__(self):
