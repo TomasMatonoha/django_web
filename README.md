@@ -4,5 +4,6 @@ py -m venv .venv
 .venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
+npm install
 # Run website
 py manage.py runserver
