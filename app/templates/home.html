@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="m-4">
+        RECENT POSTS
+    </h1>
+    {% for post in post %}
+        {% if post.image %}
+            <!-- Container for each post -->
+            <div class="container mt-5">
+                <!-- Row for each post -->
+                <div class="row d-flex align-items-stretch">
+                    <!-- Text div -->
+                    <div class="col-md-6 d-flex flex-column">
+                        <!-- Post header div -->
+                        <div class="bg-info p-1">
+                            <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-white">
+                                <h2 class="ps-1 pt-1">{{ post.title }}</h2>
+                            </a>
+                        </div>
+                        <!-- Post text div -->
+                        <div class="bg-light p-3 flex-grow-1">
+                            <p>{{ post.content|truncatechars:300 }}</p>
+                        </div>
+                        <!-- Like button and count -->
+                        <div class="bg-light p-1">
+                            <button class="btn btn-primary like-button" data-post-id="{{ post.id }}">
+                                {% if user.is_authenticated and request.user in post.like_set.all %}
+                                    Unlike
+                                {% else %}
+                                    Like
+                                {% endif %}
+                            </button>
+                            <span class="like-count">{{ post.like_set.count }}</span> Likes
+                        </div>
+                    </div>
+                    <!-- Post location + map div -->
+                    <div class="col-md-3 d-flex flex-column">
+                        <!-- Map div -->
+                        <div class="bg-info-subtle p-1">
+                            <h5 class="ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
+                        </div>
+                        <div id="map{{ forloop.counter }}" style="height: 100%" class="flex-grow-1"></div>
+                    </div>
+                    <script>
+                        // Initialize the map and set its view to the post's location
+                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 15);
+
+                        // Add OpenStreetMap tiles
+                        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        }).addTo(map{{ forloop.counter }});
+
+                        // Add a marker for the post's location
+                        L.marker([{{ post.location.latitude }}, {{ post.location.longitude }}]).addTo(map{{ forloop.counter }})
+                            .bindPopup(`<b>{{ post.location|truncatechars:35 }}</b><br>{{ post.location.description }}`);
+                    </script>
+                    <!-- Photo div -->
+                    <div class="col-md-3 d-flex align-items-center justify-content-center p-1" style="height: 100%;">
+                        <img src="{{ post.image.url }}" alt="Image error" class="img-fluid" style="max-height: 100%; object-fit: cover; border: black 3px solid">
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Container for each post without image -->
+            <div class="container mt-8">
+                <!-- Row for each post -->
+                <div class="row d-flex align-items-stretch">
+                    <!-- Text div -->
+                    <div class="col-md-8 d-flex flex-column">
+                        <!-- Post header div -->
+                        <div class="bg-info p-1">
+                            <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-white">
+                                <h2 class="ps-1 pt-1">{{ post.title }}</h2>
+                            </a>
+                        </div>
+                        <!-- Post text div -->
+                        <div class="bg-light p-3 flex-grow-1">
+                            <p>{{ post.content|truncatechars:300 }}</p>
+                        </div>
+                        <!-- Like button and count -->
+                        <div class="bg-light p-1">
+                            <button class="btn btn-primary like-button" data-post-id="{{ post.id }}">
+                                {% if user.is_authenticated and request.user in post.like_set.all %}
+                                    Unlike
+                                {% else %}
+                                    Like
+                                {% endif %}
+                            </button>
+                            <span class="like-count">{{ post.like_set.count }}</span> Likes
+                        </div>
+                    </div>
+                    <!-- Map div -->
+                    <div class="col-md-4 d-flex flex-column">
+                        <!-- Post location div -->
+                        <div class="bg-info-subtle p-1">
+                            <h5 class="ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
+                        </div>
+                        <div id="map{{ forloop.counter }}" style="height: 100%" class="flex-grow-1"></div>
+                    </div>
+                    <script>
+                        // Initialize the map and set its view to the post's location
+                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 15);
+
+                        // Add OpenStreetMap tiles
+                        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                        }).addTo(map{{ forloop.counter }});
+
+                        // Add a marker for the post's location
+                        L.marker([{{ post.location.latitude }}, {{ post.location.longitude }}]).addTo(map{{ forloop.counter }})
+                            .bindPopup(`<b>{{ post.location|truncatechars:35 }}</b><br>{{ post.location.description }}`);
+                    </script>
+                </div>
+            </div>
+        {% endif %}
+        {% if not forloop.last %}
+            <br>
+            <hr>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeButtons = document.querySelectorAll('.like-button');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            fetch("{% url 'like_post' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ post_id: postId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Toggle button text based on like status
+                if (data.liked) {
+                    this.textContent = 'Unlike';
+                } else {
+                    this.textContent = 'Like';
+                }
+                // Update like count text
+                const likeCountElement = this.nextElementSibling;
+                if (likeCountElement) {
+                    likeCountElement.textContent = `${data.like_count} Likes`;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+});
+</script>

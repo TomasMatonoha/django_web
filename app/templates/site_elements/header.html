@@ -1,0 +1,41 @@
+{% load static %}
+<header class="bg-black text-white py-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-auto">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/logo.png' %}" alt="Tree Icon" class="img-fluid m-1 p-1"
+                         style="max-height: 5vh">
+                </a>
+            </div>
+            <div class="col"></div>
+            {% comment %}<div class="col-sm-auto p-0 container-fluid">
+                <a href="{% url 'post_create' %}" class="text-decoration-none text-white">
+                    <h1>
+                        &plus;
+                    </h1>
+                </a>
+            </div>{% endcomment %}
+            <div class="col-sm-auto">
+                <div class="d-flex align-items-center center p-1 m-auto"
+                     style="height: 100%;">
+
+                    <a href="{% url 'post_create' %}" class="text-decoration-none text-white">
+                        <h1>
+                            &plus;
+                        </h1>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm-auto">
+                <div class="d-flex align-items-center justify-content-center p-1"
+                     style="height: 100%;">
+                    <a href="{% url 'user' user.pk %}">
+                        <img src="{% static 'img/profile_icon.png' %}" class="img-fluid p-1 m-1" alt="User Icon"
+                             style="max-height: 5vh">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
