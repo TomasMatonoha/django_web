@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment
+from .models import Post, Comment, Location
 
 
 class PostForm(forms.ModelForm):
@@ -25,6 +25,12 @@ class PostForm(forms.ModelForm):
         }
 
 
+class LocationForm(forms.ModelForm):
+    class Meta:
+        model = Location
+        fields = ['name', 'latitude', 'longitude', 'description']
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -38,3 +44,5 @@ class CommentForm(forms.ModelForm):
         required = {
             'content': True
         }
+
+
