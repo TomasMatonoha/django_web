@@ -1,0 +1,27 @@
+<!-- user_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ user.username }}</h1>
+    {% if user.post_set.all %}
+        <h2>Posts:</h2>
+        <ul>
+            {% for post in user.post_set.all %}
+                <a href="{% url 'post_detail' post.pk %}">
+                    <li>{{ post.title }}</li>
+                </a>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts yet.</p>
+    {% endif %}
+
+    {% if request.user == user %}
+    	<form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    {% endif %}
+{% endblock %}

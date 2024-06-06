@@ -17,11 +17,5 @@ class PostAdmin(admin.ModelAdmin):
     )
 
 
-class CommentAdmin(admin.ModelAdmin):
-    form = CommentForm
-
-
 admin.site.register(Post, PostAdmin)
-admin.site.register(Comment, CommentAdmin)
 admin.site.register(Location)
-admin.site.register(Like)

@@ -18,33 +18,31 @@
                                 <h2 class="ps-1 pt-1">{{ post.title }}</h2>
                             </a>
                         </div>
+                        <!-- Post author and date div -->
+                        <div class="bg-info-subtle p-1">
+                            <h7 class="text-black-50 ps-1 pt-1">
+                                <a href="{% url 'user' post.author.pk %}"
+                                   class="text-decoration-none text-dark">
+                                    {{ post.author }}</a>
+                                | {{ post.created_at }}
+                            </h7>
+                        </div>
                         <!-- Post text div -->
                         <div class="bg-light p-3 flex-grow-1">
-                            <p>{{ post.content|truncatechars:300 }}</p>
-                        </div>
-                        <!-- Like button and count -->
-                        <div class="bg-light p-1">
-                            <button class="btn btn-primary like-button" data-post-id="{{ post.id }}">
-                                {% if user.is_authenticated and request.user in post.like_set.all %}
-                                    Unlike
-                                {% else %}
-                                    Like
-                                {% endif %}
-                            </button>
-                            <span class="like-count">{{ post.like_set.count }}</span> Likes
+                            <p>{{ post.content|truncatechars:350 }}</p>
                         </div>
                     </div>
                     <!-- Post location + map div -->
                     <div class="col-md-3 d-flex flex-column">
                         <!-- Map div -->
                         <div class="bg-info-subtle p-1">
-                            <h5 class="ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
+                            <h5 class="m-1 ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
                         </div>
                         <div id="map{{ forloop.counter }}" style="height: 100%" class="flex-grow-1"></div>
                     </div>
                     <script>
                         // Initialize the map and set its view to the post's location
-                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 15);
+                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 9);
 
                         // Add OpenStreetMap tiles
                         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -57,14 +55,18 @@
                             .bindPopup(`<b>{{ post.location|truncatechars:35 }}</b><br>{{ post.location.description }}`);
                     </script>
                     <!-- Photo div -->
-                    <div class="col-md-3 d-flex align-items-center justify-content-center p-1" style="height: 100%;">
-                        <img src="{{ post.image.url }}" alt="Image error" class="img-fluid" style="max-height: 100%; object-fit: cover; border: black 3px solid">
+                    <div class="col-md-3 d-flex align-items-center justify-content-center p-1">
+                        <div class="d-flex align-items-center justify-content-center"
+                             style="width: 100%; height: 100%;">
+                            <img src="{{ post.image.url }}" alt="Image error" class="img-fluid"
+                                 style="max-height: 100%; object-fit: cover; border: black 3px solid;">
+                        </div>
                     </div>
                 </div>
             </div>
         {% else %}
-            <!-- Container for each post without image -->
-            <div class="container mt-8">
+            <!-- Container for each post -->
+            <div class="container mt-5">
                 <!-- Row for each post -->
                 <div class="row d-flex align-items-stretch">
                     <!-- Text div -->
@@ -75,33 +77,31 @@
                                 <h2 class="ps-1 pt-1">{{ post.title }}</h2>
                             </a>
                         </div>
+                        <!-- Post author and date div -->
+                        <div class="bg-info-subtle p-1">
+                            <h7 class="text-black-50 ps-1 pt-1">
+                                <a href="{% url 'user' post.author.pk %}"
+                                   class="text-decoration-none text-dark">
+                                    {{ post.author }}</a>
+                                | {{ post.created_at }}
+                            </h7>
+                        </div>
                         <!-- Post text div -->
                         <div class="bg-light p-3 flex-grow-1">
-                            <p>{{ post.content|truncatechars:300 }}</p>
-                        </div>
-                        <!-- Like button and count -->
-                        <div class="bg-light p-1">
-                            <button class="btn btn-primary like-button" data-post-id="{{ post.id }}">
-                                {% if user.is_authenticated and request.user in post.like_set.all %}
-                                    Unlike
-                                {% else %}
-                                    Like
-                                {% endif %}
-                            </button>
-                            <span class="like-count">{{ post.like_set.count }}</span> Likes
+                            <p>{{ post.content|truncatechars:500 }}</p>
                         </div>
                     </div>
-                    <!-- Map div -->
+                    <!-- Post location + map div -->
                     <div class="col-md-4 d-flex flex-column">
-                        <!-- Post location div -->
+                        <!-- Map div -->
                         <div class="bg-info-subtle p-1">
-                            <h5 class="ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
+                            <h5 class="m-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
                         </div>
                         <div id="map{{ forloop.counter }}" style="height: 100%" class="flex-grow-1"></div>
                     </div>
                     <script>
                         // Initialize the map and set its view to the post's location
-                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 15);
+                        let map{{ forloop.counter }} = L.map('map{{ forloop.counter }}').setView([{{ post.location.latitude|floatformat:4 }}, {{ post.location.longitude|floatformat:4 }}], 9);
 
                         // Add OpenStreetMap tiles
                         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -122,39 +122,3 @@
         {% endif %}
     {% endfor %}
 {% endblock %}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const likeButtons = document.querySelectorAll('.like-button');
-    likeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const postId = this.getAttribute('data-post-id');
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-            fetch("{% url 'like_post' %}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ post_id: postId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Toggle button text based on like status
-                if (data.liked) {
-                    this.textContent = 'Unlike';
-                } else {
-                    this.textContent = 'Like';
-                }
-                // Update like count text
-                const likeCountElement = this.nextElementSibling;
-                if (likeCountElement) {
-                    likeCountElement.textContent = `${data.like_count} Likes`;
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    });
-});
-</script>

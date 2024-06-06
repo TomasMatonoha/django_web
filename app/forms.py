@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post, Comment, Location
+from .models import Post, Location
+from django.contrib.auth.forms import UserCreationForm
 
 
 class PostForm(forms.ModelForm):
@@ -29,20 +30,3 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
         fields = ['name', 'latitude', 'longitude', 'description']
-
-
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['post', 'content']
-        widgets = {
-            'post': forms.Select(attrs={'class': 'form-control',
-                                        'placeholder': 'Select post'}),
-            'content': forms.Textarea(attrs={'class': 'form-control',
-                                             'placeholder': 'Enter comment'})
-        }
-        required = {
-            'content': True
-        }
-
-

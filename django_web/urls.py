@@ -20,14 +20,17 @@ from app.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name='home'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
     path('create/', PostCreateView.as_view(), name='post_create'),
-    path('location_create', LocationCreateView.as_view(), name='location_create'),
-    path('user/<int:pk>/', UserView.as_view(), name='user')
+    path('location_create/', LocationCreateView.as_view(), name='location_create'),
+    path('user/<int:pk>/', UserView.as_view(), name='user'),
+    path('user_login/', LoginView.as_view(), name='user_login'),
+    path('user_create/', CreateUserView.as_view(), name='user_create'),
+    path('logout/', logout_view, name='logout'),
+    path('post/<int:pk>/edit/', PostEditView.as_view(), name='post_edit'),
 ]
 
 if settings.DEBUG:

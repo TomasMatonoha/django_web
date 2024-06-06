@@ -53,39 +53,8 @@ class Post(models.Model):
                               null=True)
 
     class Meta:
-        ordering = ['title', 'created_at', 'updated_at', 'location', 'author']
+        ordering = ['-created_at', '-updated_at', 'title', 'location', 'author']
         verbose_name = 'Post'
 
     def __str__(self):
         return self.title
-
-
-class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,
-                             verbose_name="Under which post is comment under")
-    author = models.ForeignKey(User,
-                               on_delete=models.CASCADE,
-                               verbose_name="Comment author")
-    content = models.TextField(verbose_name="Comment content",
-                               error_messages={"blank": "Enter comment"})
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['created_at', 'author', 'updated_at']
-        verbose_name = 'Comment'
-
-    def __str__(self):
-        return f'Comment by {self.author} on {self.post}'
-
-
-class Like(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = (('user', 'post'),)
-        verbose_name = 'Like'
-
-    def __str__(self):
-        return f'Liked by {self.user} on {self.post}'

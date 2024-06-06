@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Edit Post</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      {% for field in form.visible_fields %}
+        <div class="form-group">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {{ field.errors }}
+        </div>
+      {% endfor %}
+    </div>
+<div class="form-group d-flex align-items-center">
+    <label for="{{ post_form.location.id_for_label }}" class="m-2">Location</label>
+    <div class="d-flex align-items-center">
+        {{ form.location }}
+        <a href="{% url 'location_create' %}" class="btn btn-primary m-3 w-auto">Create Location</a>
+    </div>
+</div>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+  </form>
+{% endblock %}
