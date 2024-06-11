@@ -9,9 +9,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class Location(models.Model):
     name = models.CharField(max_length=255,
                             verbose_name="Location name",
-                            help_text="Enter a location name",
                             error_messages={'blank': "Enter a location",
                                             'unique': "Enter a unique location"})
+    author = models.ForeignKey(User, on_delete=models.CASCADE,
+                               verbose_name="Post author")
     latitude = models.FloatField(validators=[MinValueValidator(-90), MaxValueValidator(90)],
                                  error_messages={'blank': "Enter a latitude"})
     longitude = models.FloatField(validators=[MinValueValidator(-180), MaxValueValidator(180)],

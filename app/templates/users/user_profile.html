@@ -8,10 +8,7 @@
         <h2>Posts:</h2>
         <ul>
             {% for post in user.post_set.all %}
-                <a href="{% url 'post_detail' post.pk %}">
-                    <li>{{ post.title }}</li>
-                </a>
-
+                <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
@@ -19,9 +16,9 @@
     {% endif %}
 
     {% if request.user == user %}
-    	<form action="{% url 'logout' %}" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+        <form action="{% url 'logout' %}" method="post" class="p-2">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
     {% endif %}
 {% endblock %}

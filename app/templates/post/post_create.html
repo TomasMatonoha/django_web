@@ -1,3 +1,4 @@
+<!-- post_create.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -27,7 +28,7 @@
     {{ post_form.location.errors }}
     <div class="form-group d-flex align-items-center">
       <label for="{{ post_form.location.id_for_label }}" class="m-2">Location</label>
-       <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center">
         {{ post_form.location }}
         <a href="{% url 'location_create' %}" class="btn btn-primary m-3" id="create-location-button">Create Location</a>
       </div>

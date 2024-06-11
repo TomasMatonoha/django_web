@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.views.generic import ListView, DetailView, CreateView, View, UpdateView
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import ListView, DetailView, CreateView, View, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.http import JsonResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
+from django.http import HttpResponseRedirect
 from django.contrib.auth.views import LoginView
 
 from .models import *
@@ -61,27 +60,25 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy('post_detail', kwargs={'pk': self.object.pk})
 
 
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    success_url = reverse_lazy('home')
+
+
 class LocationCreateView(LoginRequiredMixin, CreateView):
     model = Location
     form_class = LocationForm
     template_name = 'location/location_create.html'
     success_url = reverse_lazy('post_create')
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
-@login_required
-@require_POST
-def like_post(request):
-    post_id = request.POST.get('post_id')
-    post = get_object_or_404(Post, id=post_id)
-    like, created = Like.objects.get_or_create(post=post, user=request.user)
 
-    if not created:
-        like.delete()
-        liked = False
-    else:
-        liked = True
-
-    return JsonResponse({'liked': liked, 'like_count': post.like_set.count()})
+class LocationDeleteView(LoginRequiredMixin, DeleteView):
+    model = Location
+    success_url = reverse_lazy('post_create')  # Redirect to the post create page after deletion
 
 
 class UserView(DetailView):
