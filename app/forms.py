@@ -32,6 +32,19 @@ class PostForm(forms.ModelForm):
                 self.user = user
 
 
+class PostDeleteForm(forms.Form):
+    posts = forms.ModelMultipleChoiceField(
+        queryset=Post.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['posts'].queryset = Post.objects.filter(author=user)
+
+
 class LocationForm(forms.ModelForm):
     class Meta:
         model = Location
@@ -40,7 +53,8 @@ class LocationForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter location name'}),
             'latitude': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter latitude'}),
             'longitude': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter longitude'}),
-            'description': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Provide a description (optional)'}),
+            'description': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Provide a description (optional)'}),
             'author': forms.HiddenInput(),
         }
         required = {
@@ -52,10 +66,13 @@ class LocationForm(forms.ModelForm):
 
 
 class LocationDeleteForm(forms.Form):
-    location_id = forms.IntegerField(widget=forms.HiddenInput)
+    locations = forms.ModelMultipleChoiceField(
+        queryset=Location.objects.none(),
+        widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
 
-    def clean_location_id(self):
-        location_id = self.cleaned_data['location_id']
-        if not Location.objects.filter(pk=location_id).exists():
-            raise forms.ValidationError("Invalid location.")
-        return location_id
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['locations'].queryset = Location.objects.filter(author=user)

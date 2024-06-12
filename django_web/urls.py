@@ -25,14 +25,16 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('post/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
     path('create/', PostCreateView.as_view(), name='post_create'),
-    path('location_create/', LocationCreateView.as_view(), name='location_create'),
-    path('location/delete/<int:pk>/', LocationDeleteView.as_view(), name='location_delete'),
+    path('post/<int:pk>/edit/', PostEditView.as_view(), name='post_edit'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+    path('post//delete/', PostsDeleteView.as_view(), name='posts_delete'),
+    path('location/create/', LocationCreateView.as_view(), name='location_create'),
+    path('location/delete/', LocationDeleteView.as_view(), name='location_delete'),
     path('user/<int:pk>/', UserView.as_view(), name='user'),
     path('user_login/', LoginView.as_view(), name='user_login'),
     path('user_create/', CreateUserView.as_view(), name='user_create'),
     path('logout/', logout_view, name='logout'),
-    path('post/<int:pk>/edit/', PostEditView.as_view(), name='post_edit'),
-    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+
 ]
 
 if settings.DEBUG:

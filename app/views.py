@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import ListView, DetailView, CreateView, View, UpdateView, DeleteView
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView, DetailView, CreateView, View, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -65,6 +66,22 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('home')
 
 
+class PostsDeleteView(LoginRequiredMixin, FormView):
+    template_name = 'post/posts_delete.html'
+    form_class = PostDeleteForm
+    success_url = reverse_lazy('user')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        posts = form.cleaned_data['posts']
+        posts.delete()
+        return super().form_valid(form)
+
+
 class LocationCreateView(LoginRequiredMixin, CreateView):
     model = Location
     form_class = LocationForm
@@ -76,9 +93,20 @@ class LocationCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class LocationDeleteView(LoginRequiredMixin, DeleteView):
-    model = Location
-    success_url = reverse_lazy('post_create')  # Redirect to the post create page after deletion
+class LocationDeleteView(LoginRequiredMixin, FormView):
+    template_name = 'location/location_delete.html'
+    form_class = LocationDeleteForm
+    success_url = reverse_lazy('post_create')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        locations = form.cleaned_data['locations']
+        locations.delete()
+        return super().form_valid(form)
 
 
 class UserView(DetailView):

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="m-4">
-        RECENT POSTS
+    <h1 class="mt-4 mb-4 ms-3">
+        <b>RECENT POSTS</b>
     </h1>
     {% for post in post %}
         {% if post.image %}
@@ -15,15 +15,15 @@
                         <!-- Post header div -->
                         <div class="bg-info p-1">
                             <a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-white">
-                                <h2 class="ps-1 pt-1">{{ post.title }}</h2>
+                                <h2 class="ps-1 pt-1">{{ post.title|truncatechars:40 }}</h2>
                             </a>
                         </div>
                         <!-- Post author and date div -->
                         <div class="bg-info-subtle p-1">
                             <h7 class="text-black-50 ps-1 pt-1">
                                 <a href="{% url 'user' post.author.pk %}"
-                                   class="text-decoration-none text-dark">
-                                    {{ post.author }}</a>
+                                   class="text-decoration-none text-dark"><b>{{ post.author }}</b>
+                                    </a>
                                 | {{ post.created_at }}
                             </h7>
                         </div>
@@ -34,10 +34,10 @@
                     </div>
                     <!-- Post location + map div -->
                     <div class="col-md-3 d-flex flex-column">
-                        <!-- Map div -->
                         <div class="bg-info-subtle p-1">
                             <h5 class="m-1 ps-1 text-black-50">{{ post.location|truncatechars:35 }}</h5>
                         </div>
+                        <!-- Map div -->
                         <div id="map{{ forloop.counter }}" style="height: 100%" class="flex-grow-1"></div>
                     </div>
                     <script>
@@ -81,8 +81,8 @@
                         <div class="bg-info-subtle p-1">
                             <h7 class="text-black-50 ps-1 pt-1">
                                 <a href="{% url 'user' post.author.pk %}"
-                                   class="text-decoration-none text-dark">
-                                    {{ post.author }}</a>
+                                   class="text-decoration-none text-dark"><b>{{ post.author }}</b>
+                                    </a>
                                 | {{ post.created_at }}
                             </h7>
                         </div>
@@ -119,6 +119,8 @@
         {% if not forloop.last %}
             <br>
             <hr>
+            {% else %}
+            <br>
         {% endif %}
     {% endfor %}
 {% endblock %}

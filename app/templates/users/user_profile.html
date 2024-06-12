@@ -1,24 +1,33 @@
-<!-- user_profile.html -->
-
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>{{ user.username }}</h1>
+    <h1 class="pt-2 pb-2"><b>{{ user.username }}</b></h1>
     {% if user.post_set.all %}
-        <h2>Posts:</h2>
-        <ul>
-            {% for post in user.post_set.all %}
-                <li><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></li>
-            {% endfor %}
-        </ul>
+        <h2>Posts</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date Posted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in user.post_set.all %}
+                        <tr>
+                            <td><a href="{% url 'post_detail' post.pk %}" class="text-decoration-none text-black">{{ post.title }}</a></td>
+                            <td class="text-black-50">{{ post.created_at }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p>No posts yet.</p>
+        <h3 class="pt-1 pb-1">No posts yet.</h3>
     {% endif %}
-
     {% if request.user == user %}
-        <form action="{% url 'logout' %}" method="post" class="p-2">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
+        <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
+        <a href="{% url 'posts_delete' %}" class="btn btn-danger m-3" >Delete a Post</a>
     {% endif %}
+    <br>
 {% endblock %}
